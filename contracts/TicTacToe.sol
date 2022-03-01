@@ -1,10 +1,12 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.4.24;
-
 /**
- * @title TicTacToe contract
- **/
+ * @title TikTakToe Contract
+ * @author CID: 02138819
+ * @notice This contract plays tiktaktoe.
+ */
 contract TicTacToe {
+
     address[2] public players;
 
     /**
@@ -24,18 +26,22 @@ contract TicTacToe {
     uint public status;
 
     /**
-    board status
+    board - array init 0
      0    1    2
      3    4    5
      6    7    8
      */
     uint[9] private board;
 
+    // Keep count of total moves - must not exceed 9
+    uint moveCount = 0;
+
     /**
       * @dev Deploy the contract to create a new game
       * @param opponent The address of player2
       **/
     constructor(address opponent) public {
+        require(opponent != 0x0);
         require(msg.sender != opponent, "No self play");
         players = [msg.sender, opponent];
     }
@@ -49,6 +55,11 @@ contract TicTacToe {
       **/    
     function _threeInALine(uint a, uint b, uint c) private view returns (bool){
         /*Please complete the code here.*/
+        if (board[a] == board[b] && board[b] == board[c]) {
+          return true;
+        } else {
+          return false;
+        }
     }
 
     /**
@@ -58,6 +69,34 @@ contract TicTacToe {
      */
     function _getStatus(uint pos) private view returns (uint) {
         /*Please complete the code here.*/
+        // rows 
+        if (_threeInALine(0,1,2)) {
+          return board[0];
+        } else if (_threeInALine(3,4,5)) {
+          return board[3];
+        } else if (_threeInALine(6,7,8)) {
+          return board[6];
+        }
+        // columns 
+        if (_threeInALine(0,3,6)) {
+          return board[0];
+        } else if (_threeInALine(1,4,7)) {
+          return board[1];
+        } else if (_threeInALine(2,5,8)) {
+          return board[2];
+        }
+        // diagonals 
+        if (_threeInALine(0,4,8)) {
+          return board[0];
+        } else if (_threeInALine(2,4,6)) {
+          return board[2];
+        }
+        // draw else ongoing
+        if (moveCount >= 9) {
+          return 3;
+        } else {
+          return 0;
+        }
     }
 
     /**
@@ -67,6 +106,9 @@ contract TicTacToe {
      */
     modifier _checkStatus(uint pos) {
         /*Please complete the code here.*/
+        require(status == 0);
+        _;
+        status = _getStatus(pos);
     }
 
     /**
@@ -75,6 +117,13 @@ contract TicTacToe {
      */
     function myTurn() public view returns (bool) {
        /*Please complete the code here.*/
+       address currPlayer = msg.sender;
+       if (turn == 1 && currPlayer == players[0]) {
+          return true;
+       } else if (turn == 2 && currPlayer == players[1]) {
+          return true;
+       }
+       return false;
     }
 
     /**
@@ -83,6 +132,15 @@ contract TicTacToe {
      */
     modifier _myTurn() {
       /*Please complete the code here.*/
+      require(myTurn() == true);
+      _;
+      if (turn == 1) {
+        turn = 2;
+      } else {
+        turn = 1;
+      }
+      // incrememt number of moves played
+      moveCount += 1;
     }
 
     /**
@@ -92,6 +150,11 @@ contract TicTacToe {
      */
     function validMove(uint pos) public view returns (bool) {
       /*Please complete the code here.*/
+      if (board[pos] == 0  && pos>= 0 && pos <= 8) {
+        return true;
+      } else {
+        return false;
+      }
     }
 
     /**
@@ -100,6 +163,8 @@ contract TicTacToe {
      */
     modifier _validMove(uint pos) {
       /*Please complete the code here.*/
+      require(validMove(pos) == true);
+      _;
     }
 
     /**
