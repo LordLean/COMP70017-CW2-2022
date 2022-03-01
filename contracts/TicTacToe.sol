@@ -3,7 +3,7 @@ pragma solidity ^0.4.24;
 /**
  * @title TikTakToe Contract
  * @author CID: 02138819
- * @notice This contract plays tiktaktoe.
+ * @notice This contract plays tictactoe.
  */
 contract TicTacToe {
 
