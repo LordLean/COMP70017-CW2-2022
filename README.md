@@ -1,8 +1,6 @@
 # Tic-Tac-Toe 
 
-We packaged the entire code into a docker container, such that you literally don't need to configure anything.
-
-## Instructions
+### Instructions
 You can run `docker build -t tic-tac-toe .` to build the tic-tac-toe docker image.
 
 Prerequisite: please [install docker](https://docs.docker.com/desktop/) on your system.
